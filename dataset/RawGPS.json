@@ -15,14 +15,9 @@
 			},
 			"columnDelimiter": "|",
 			"escapeChar": "\\",
-			"firstRowAsHeader": true,
+			"firstRowAsHeader": false,
 			"quoteChar": "\""
 		},
-		"schema": [
-			{
-				"name": "SystemID = SYS30358|DeviceID = 14124D82CA|SoftwareVer = 3.0.0.14|Timezone = (GMT-05:00) Eastern Time (US & Canada)|",
-				"type": "String"
-			}
-		]
+		"schema": []
 	}
 }
