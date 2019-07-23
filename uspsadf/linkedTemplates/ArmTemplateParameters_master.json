@@ -8,6 +8,9 @@
 		"gpsblob_connectionString": {
 			"value": ""
 		},
+		"sqledgesim_connectionString": {
+			"value": ""
+		},
 		"KeyVaultEUS2_properties_typeProperties_baseUrl": {
 			"value": "https://bjvaulteus2.vault.azure.net/"
 		},

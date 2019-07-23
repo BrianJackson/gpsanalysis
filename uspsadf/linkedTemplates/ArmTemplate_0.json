@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'gpsblob'"
 		},
+		"sqledgesim_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'sqledgesim'"
+		},
 		"KeyVaultEUS2_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://bjvaulteus2.vault.azure.net/"
@@ -46,6 +50,125 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sqledgesim')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Azure SQL Database to simulate SQL Edge",
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('sqledgesim_connectionString')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "KeyVaultEUS2",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "brianjaceusdb"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/KeyVaultEUS2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RawGPS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "gpsblob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "SYS30358_14124D82CA_07-10-2019_InternalGpsData.log",
+						"container": "uspsmdd"
+					},
+					"columnDelimiter": "|",
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/gpsblob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GPSGLL')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "sqledgesim",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "dbo.gpsraw"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/sqledgesim')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "RawGPS",
+								"type": "DatasetReference"
+							},
+							"name": "sourceGPS",
+							"typeProperties": {}
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "GPSGLL",
+								"type": "DatasetReference"
+							},
+							"name": "sqlDB"
+						}
+					],
+					"script": "\n\nsource(output(\n\t\tTimeStamp as string,\n\t\tValue as string,\n\t\tColumn_3 as string,\n\t\tColumn_4 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipLines: 2) ~> sourceGPS\nsourceGPS select(mapColumn(\n\t\tTimeStamp,\n\t\tValue\n\t)) ~> timeandvalue\nfilterGPLL derive(latitude = split(Value, ',')[2],\n\t\tdir_latitude = split(Value, ',')[3],\n\t\tlongitude = split(Value, ',')[4],\n\t\tdir_logitude = split(Value, ',')[5],\n\t\tutc_position = split(Value, ',')[6],\n\t\tis_valid = split(Value, ',')[7],\n\t\tmode = split(Value, ',')[8]) ~> gpgll\ntimeandvalue derive(recordtype = split(Value, ',')[1]) ~> timerecordandvalue\ntimerecordandvalue filter(recordtype=='$GPGLL') ~> filterGPLL\ngpgll filter(is_valid=='A') ~> filterValid\nfilterValid sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'table',\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tkeys:['TimeStamp']) ~> sqlDB"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/RawGPS')]",
+				"[concat(variables('factoryId'), '/datasets/GPSGLL')]"
+			]
 		}
 	]
 }
