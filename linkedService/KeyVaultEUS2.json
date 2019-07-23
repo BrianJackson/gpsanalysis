@@ -1,0 +1,10 @@
+{
+	"name": "KeyVaultEUS2",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://bjvaulteus2.vault.azure.net/"
+		}
+	}
+}
