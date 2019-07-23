@@ -1,0 +1,19 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "RawGPS",
+						"type": "DatasetReference"
+					},
+					"name": "sourceGPS"
+				}
+			],
+			"sinks": [],
+			"script": "\n\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipLines: 2) ~> sourceGPS"
+		}
+	}
+}
