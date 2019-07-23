@@ -13,7 +13,7 @@
 				"fileName": "SYS30358_14124D82CA_07-10-2019_InternalGpsData.log",
 				"container": "uspsmdd"
 			},
-			"columnDelimiter": ",",
+			"columnDelimiter": "|",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
