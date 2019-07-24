@@ -162,12 +162,50 @@
 							"name": "sqlDB"
 						}
 					],
-					"script": "\n\nsource(output(\n\t\tTimeStamp as string,\n\t\tValue as string,\n\t\tColumn_3 as string,\n\t\tColumn_4 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipLines: 2) ~> sourceGPS\nsourceGPS select(mapColumn(\n\t\tTimeStamp,\n\t\tValue\n\t)) ~> timeandvalue\nfilterGPLL derive(latitude = split(Value, ',')[2],\n\t\tdir_latitude = split(Value, ',')[3],\n\t\tlongitude = split(Value, ',')[4],\n\t\tdir_logitude = split(Value, ',')[5],\n\t\tutc_position = split(Value, ',')[6],\n\t\tis_valid = split(Value, ',')[7],\n\t\tmode = split(Value, ',')[8]) ~> gpgll\ntimeandvalue derive(recordtype = split(Value, ',')[1]) ~> timerecordandvalue\ntimerecordandvalue filter(recordtype=='$GPGLL') ~> filterGPLL\ngpgll filter(is_valid=='A') ~> filterValid\nfilterValid sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'table',\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tkeys:['TimeStamp']) ~> sqlDB"
+					"script": "\n\nsource(output(\n\t\tTimeStamp as string,\n\t\tValue as string,\n\t\tColumn_3 as string,\n\t\tColumn_4 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipLines: 2) ~> sourceGPS\nsourceGPS select(mapColumn(\n\t\tTimeStamp,\n\t\tValue\n\t)) ~> timeandvalue\nfilterGPLL derive(latitude = toDecimal(split(Value, ',')[2], 10, 5),\n\t\tdir_latitude = split(Value, ',')[3],\n\t\tlongitude = toDecimal(split(Value, ',')[4], 10, 5),\n\t\tdir_longitude = split(Value, ',')[5],\n\t\tutc_position = toDecimal(split(Value, ',')[6], 15, 5),\n\t\tis_valid = split(Value, ',')[7],\n\t\tmode = split(Value, ',')[8]) ~> gpgll\ntimeandvalue derive(recordtype = split(Value, ',')[1]) ~> timerecordandvalue\ntimerecordandvalue filter(recordtype=='$GPGLL') ~> filterGPLL\ngpgll filter(is_valid=='A') ~> filterValid\nfilterValid sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'table',\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tkeys:['TimeStamp']) ~> sqlDB"
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/RawGPS')]",
 				"[concat(variables('factoryId'), '/datasets/GPSGLL')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "IngestGPS",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow1",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceGPS": {},
+									"sqlDB": {}
+								}
+							},
+							"staging": {}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
 			]
 		}
 	]
