@@ -1,0 +1,25 @@
+{
+	"name": "DataWarehouse",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "On premises warehouse",
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "Integrated Security=True;Data Source=brianjacSQLVMIR;Initial Catalog=Warehouse",
+			"userName": "bjadmin",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "MLOps Key Vault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "sqlpassword"
+			}
+		},
+		"connectVia": {
+			"referenceName": "OnPremSQL",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
