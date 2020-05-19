@@ -1,0 +1,38 @@
+{
+	"name": "POS_Transaction_Raw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLake KVAT",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"pos_dir": {
+				"type": "string"
+			},
+			"pos_file": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().pos_file",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().pos_dir",
+					"type": "Expression"
+				},
+				"fileSystem": "kvat"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
