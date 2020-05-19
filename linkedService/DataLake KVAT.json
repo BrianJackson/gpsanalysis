@@ -1,0 +1,10 @@
+{
+	"name": "DataLake KVAT",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://brianjacdatalakegen2.dfs.core.windows.net"
+		}
+	}
+}
