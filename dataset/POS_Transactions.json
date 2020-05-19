@@ -1,0 +1,38 @@
+{
+	"name": "POS_Transactions",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataWarehouse",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "posid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "itemid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "trandate",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "price",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "pos_tran"
+		}
+	}
+}
