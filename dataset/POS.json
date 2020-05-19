@@ -1,0 +1,20 @@
+{
+	"name": "POS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLake KVAT",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "raw",
+				"fileSystem": "kvat"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
