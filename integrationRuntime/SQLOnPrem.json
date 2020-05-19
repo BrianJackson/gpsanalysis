@@ -1,0 +1,6 @@
+{
+	"name": "SQLOnPrem",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
