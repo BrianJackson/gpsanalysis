@@ -5,8 +5,23 @@
 		"factoryName": {
 			"value": "brianjacDF"
 		},
+		"DataWarehouse_connectionString": {
+			"value": ""
+		},
+		"DataLake KVAT_properties_typeProperties_url": {
+			"value": "https://brianjacdatalakegen2.dfs.core.windows.net"
+		},
+		"DataWarehouse_properties_typeProperties_userName": {
+			"value": "bjadmin"
+		},
 		"MLOps Key Vault_properties_typeProperties_baseUrl": {
 			"value": "https://mlopsbj-AML-KV.vault.azure.net/"
+		},
+		"Trigger_olb_properties_pipeline_parameters_windowStart": {
+			"value": "@trigger().outputs.windowStartTime"
+		},
+		"Trigger_olb_properties_pipeline_parameters_windowEnd": {
+			"value": "@trigger().outputs.windowEndTime"
 		},
 		"containerUri": {
 			"value": ""

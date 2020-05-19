@@ -7,9 +7,29 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "brianjacDF"
 		},
+		"DataWarehouse_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'DataWarehouse'"
+		},
+		"DataLake KVAT_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://brianjacdatalakegen2.dfs.core.windows.net"
+		},
+		"DataWarehouse_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "bjadmin"
+		},
 		"MLOps Key Vault_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://mlopsbj-AML-KV.vault.azure.net/"
+		},
+		"Trigger_olb_properties_pipeline_parameters_windowStart": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowStartTime"
+		},
+		"Trigger_olb_properties_pipeline_parameters_windowEnd": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowEndTime"
 		},
 		"containerUri": {
 			"type": "string",
@@ -38,8 +58,23 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"DataWarehouse_connectionString": {
+						"value": "[parameters('DataWarehouse_connectionString')]"
+					},
+					"DataLake KVAT_properties_typeProperties_url": {
+						"value": "[parameters('DataLake KVAT_properties_typeProperties_url')]"
+					},
 					"MLOps Key Vault_properties_typeProperties_baseUrl": {
 						"value": "[parameters('MLOps Key Vault_properties_typeProperties_baseUrl')]"
+					},
+					"DataWarehouse_properties_typeProperties_userName": {
+						"value": "[parameters('DataWarehouse_properties_typeProperties_userName')]"
+					},
+					"Trigger_olb_properties_pipeline_parameters_windowStart": {
+						"value": "[parameters('Trigger_olb_properties_pipeline_parameters_windowStart')]"
+					},
+					"Trigger_olb_properties_pipeline_parameters_windowEnd": {
+						"value": "[parameters('Trigger_olb_properties_pipeline_parameters_windowEnd')]"
 					}
 				}
 			},

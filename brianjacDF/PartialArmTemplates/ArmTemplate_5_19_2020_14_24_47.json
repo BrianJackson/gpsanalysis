@@ -6,30 +6,6 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "brianjacDF"
-		},
-		"DataWarehouse_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'DataWarehouse'"
-		},
-		"DataLake KVAT_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://brianjacdatalakegen2.dfs.core.windows.net"
-		},
-		"DataWarehouse_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "bjadmin"
-		},
-		"MLOps Key Vault_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://mlopsbj-AML-KV.vault.azure.net/"
-		},
-		"Trigger_olb_properties_pipeline_parameters_windowStart": {
-			"type": "string",
-			"defaultValue": "@trigger().outputs.windowStartTime"
-		},
-		"Trigger_olb_properties_pipeline_parameters_windowEnd": {
-			"type": "string",
-			"defaultValue": "@trigger().outputs.windowEndTime"
 		}
 	},
 	"variables": {
@@ -96,8 +72,7 @@
 						"inputs": [
 							{
 								"referenceName": "SourceDataset_olb",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
@@ -214,9 +189,7 @@
 					"table": "pos_tran"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/DataWarehouse')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/POS_Transaction_Raw')]",
@@ -275,12 +248,9 @@
 				},
 				"annotations": [],
 				"type": "SqlServerTable",
-				"schema": [],
-				"typeProperties": {}
+				"schema": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/DataWarehouse')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DataLake KVAT')]",
@@ -290,50 +260,7 @@
 				"annotations": [],
 				"type": "AzureBlobFS",
 				"typeProperties": {
-					"url": "[parameters('DataLake KVAT_properties_typeProperties_url')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DataWarehouse')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "On premises warehouse",
-				"annotations": [],
-				"type": "SqlServer",
-				"typeProperties": {
-					"connectionString": "[parameters('DataWarehouse_connectionString')]",
-					"userName": "[parameters('DataWarehouse_properties_typeProperties_userName')]",
-					"password": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "MLOps Key Vault",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "sqlpassword"
-					}
-				},
-				"connectVia": {
-					"referenceName": "OnPremSQL",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/OnPremSQL')]",
-				"[concat(variables('factoryId'), '/linkedServices/MLOps Key Vault')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MLOps Key Vault')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureKeyVault",
-				"typeProperties": {
-					"baseUrl": "[parameters('MLOps Key Vault_properties_typeProperties_baseUrl')]"
+					"url": "https://brianjacdatalakegen2.dfs.core.windows.net"
 				}
 			},
 			"dependsOn": []
@@ -353,11 +280,11 @@
 					"parameters": {
 						"windowStart": {
 							"type": "Expression",
-							"value": "[parameters('Trigger_olb_properties_pipeline_parameters_windowStart')]"
+							"value": "@trigger().outputs.windowStartTime"
 						},
 						"windowEnd": {
 							"type": "Expression",
-							"value": "[parameters('Trigger_olb_properties_pipeline_parameters_windowEnd')]"
+							"value": "@trigger().outputs.windowEndTime"
 						}
 					}
 				},
@@ -378,17 +305,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/CopyTransactionToLake')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OnPremSQL')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"description": "SQL On Prem  (brianjacSQLVMIR)",
-				"typeProperties": {}
-			},
-			"dependsOn": []
 		}
 	]
 }
