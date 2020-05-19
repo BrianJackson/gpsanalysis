@@ -1,0 +1,7 @@
+{
+	"name": "OnPremSQL",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "SQL On Prem  (brianjacSQLVMIR)"
+	}
+}
