@@ -1,0 +1,12 @@
+{
+	"name": "SourceDataset_1qy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataWarehouse",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	}
+}
