@@ -1,10 +1,6 @@
 {
 	"name": "GPSGLL",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "sqledgesim",
-			"type": "LinkedServiceReference"
-		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [],
