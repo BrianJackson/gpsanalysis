@@ -1,0 +1,10 @@
+{
+	"name": "MLOps Key Vault",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://mlopsbj-AML-KV.vault.azure.net/"
+		}
+	}
+}
