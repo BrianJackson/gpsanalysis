@@ -11,7 +11,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "trans_data",
+					"value": "@CONCAT(pipeline().RunId, '.txt')",
 					"type": "Expression"
 				},
 				"folderPath": "raw",
