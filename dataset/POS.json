@@ -11,7 +11,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "/@{concat(formatDateTime(pipeline().TriggerTime,'yyyy'), '/', formatDateTime(pipeline().TriggerTime,'yyyy'), '/',\nformatDateTime(pipeline().TriggerTime,'dd'), '/pos_trans_',\npipeline().TriggerTime)}\n",
+					"value": "trans_data",
 					"type": "Expression"
 				},
 				"folderPath": "raw",
