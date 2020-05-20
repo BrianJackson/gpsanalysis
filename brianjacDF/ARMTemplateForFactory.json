@@ -166,99 +166,20 @@
 					"escapeChar": "\\",
 					"quoteChar": "\""
 				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/DataLake KVAT')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/POSTransactions')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "DataWarehouse",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "POS"
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
 				"schema": [
 					{
-						"name": "posid",
-						"type": "int",
-						"precision": 10
+						"type": "String"
 					},
 					{
-						"name": "itemid",
-						"type": "int",
-						"precision": 10
+						"type": "String"
 					},
 					{
-						"name": "trandate",
-						"type": "datetime2",
-						"scale": 7
+						"type": "String"
 					},
 					{
-						"name": "price",
-						"type": "money",
-						"precision": 19,
-						"scale": 4
+						"type": "String"
 					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "pos_tran"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/DataWarehouse')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/POS_Transaction_Raw')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "DataLake KVAT",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"pos_dir": {
-						"type": "string"
-					},
-					"pos_file": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "POS"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().pos_file",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().pos_dir",
-							"type": "Expression"
-						},
-						"fileSystem": "kvat"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/DataLake KVAT')]"
@@ -334,6 +255,29 @@
 				"type": "AzureKeyVault",
 				"typeProperties": {
 					"baseUrl": "[parameters('MLOps Key Vault_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Trigger_1qy')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 1,
+					"startTime": "2020-05-19T18:39:00.000Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 1,
+					"retryPolicy": {
+						"count": 3,
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
 				}
 			},
 			"dependsOn": []
