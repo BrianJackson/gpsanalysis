@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'DataWarehouse'"
 		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
 		"DataLake KVAT_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://brianjacdatalakegen2.dfs.core.windows.net"
@@ -60,6 +64,9 @@
 					},
 					"DataWarehouse_connectionString": {
 						"value": "[parameters('DataWarehouse_connectionString')]"
+					},
+					"AzureSqlDatabase1_connectionString": {
+						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
 					},
 					"DataLake KVAT_properties_typeProperties_url": {
 						"value": "[parameters('DataLake KVAT_properties_typeProperties_url')]"

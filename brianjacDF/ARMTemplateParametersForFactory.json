@@ -8,6 +8,9 @@
 		"DataWarehouse_connectionString": {
 			"value": ""
 		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
 		"DataLake KVAT_properties_typeProperties_url": {
 			"value": "https://brianjacdatalakegen2.dfs.core.windows.net"
 		},
