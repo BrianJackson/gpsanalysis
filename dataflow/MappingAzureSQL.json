@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "MappingAzureSQL",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -12,9 +12,17 @@
 					"name": "source1"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [],
-			"script": "source(output(\n\t\tposid as integer '000',\n\t\titemid as integer '000',\n\t\ttrandate as timestamp 'MM/dd/yyyy HH:mm:ss',\n\t\tprice as decimal(10,0) '$#########.###'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100,\n\trowUrlColumn: 'sourcefile',\n\tpartitionRootPath: 'raw/pos',\n\tinferDriftedColumnTypes: true,\n\twildcardPaths:['raw/pos/**/*.txt']) ~> source1"
+			"script": "source(output(\n\t\tposid as integer '000',\n\t\titemid as integer '000',\n\t\ttrandate as timestamp 'MM/dd/yyyy HH:mm:ss',\n\t\tprice as decimal(10,0) '$#########.###'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100,\n\trowUrlColumn: 'sourcefile',\n\tpartitionRootPath: 'raw/pos',\n\tinferDriftedColumnTypes: true,\n\twildcardPaths:['raw/pos/**/*.txt']) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
 		}
 	}
 }
