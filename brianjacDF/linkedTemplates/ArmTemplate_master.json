@@ -7,15 +7,27 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "brianjacDF"
 		},
-		"DataWarehouse_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'DataWarehouse'"
-		},
 		"AzureSqlDatabase1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
 		},
+		"DataLakeKey_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'DataLakeKey'"
+		},
+		"DataWarehouse_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'DataWarehouse'"
+		},
+		"TripsDB_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'TripsDB'"
+		},
 		"DataLake KVAT_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://brianjacdatalakegen2.dfs.core.windows.net"
+		},
+		"DataLakeKey_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://brianjacdatalakegen2.dfs.core.windows.net"
 		},
@@ -49,7 +61,7 @@
 	},
 	"resources": [
 		{
-			"name": "ArmTemplate_0",
+			"name": "brianjacDF_ArmTemplate_0",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2018-02-01",
 			"properties": {
@@ -62,14 +74,23 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"DataWarehouse_connectionString": {
-						"value": "[parameters('DataWarehouse_connectionString')]"
+					"DataLakeKey_accountKey": {
+						"value": "[parameters('DataLakeKey_accountKey')]"
+					},
+					"TripsDB_connectionString": {
+						"value": "[parameters('TripsDB_connectionString')]"
 					},
 					"AzureSqlDatabase1_connectionString": {
 						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
 					},
+					"DataWarehouse_connectionString": {
+						"value": "[parameters('DataWarehouse_connectionString')]"
+					},
 					"DataLake KVAT_properties_typeProperties_url": {
 						"value": "[parameters('DataLake KVAT_properties_typeProperties_url')]"
+					},
+					"DataLakeKey_properties_typeProperties_url": {
+						"value": "[parameters('DataLakeKey_properties_typeProperties_url')]"
 					},
 					"MLOps Key Vault_properties_typeProperties_baseUrl": {
 						"value": "[parameters('MLOps Key Vault_properties_typeProperties_baseUrl')]"

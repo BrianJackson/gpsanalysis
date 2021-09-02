@@ -5,13 +5,22 @@
 		"factoryName": {
 			"value": "brianjacDF"
 		},
-		"DataWarehouse_connectionString": {
-			"value": ""
-		},
 		"AzureSqlDatabase1_connectionString": {
 			"value": ""
 		},
+		"DataLakeKey_accountKey": {
+			"value": ""
+		},
+		"DataWarehouse_connectionString": {
+			"value": ""
+		},
+		"TripsDB_connectionString": {
+			"value": ""
+		},
 		"DataLake KVAT_properties_typeProperties_url": {
+			"value": "https://brianjacdatalakegen2.dfs.core.windows.net"
+		},
+		"DataLakeKey_properties_typeProperties_url": {
 			"value": "https://brianjacdatalakegen2.dfs.core.windows.net"
 		},
 		"DataWarehouse_properties_typeProperties_userName": {

@@ -7,15 +7,27 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "brianjacDF"
 		},
-		"DataWarehouse_connectionString": {
+		"DataLakeKey_accountKey": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'DataWarehouse'"
+			"metadata": "Secure string for 'accountKey' of 'DataLakeKey'"
+		},
+		"TripsDB_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'TripsDB'"
 		},
 		"AzureSqlDatabase1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
 		},
+		"DataWarehouse_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'DataWarehouse'"
+		},
 		"DataLake KVAT_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://brianjacdatalakegen2.dfs.core.windows.net"
+		},
+		"DataLakeKey_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://brianjacdatalakegen2.dfs.core.windows.net"
 		},
@@ -54,6 +66,24 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DataLakeKey')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Using account key to accommodate data wrangling limitation ",
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('DataLakeKey_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('DataLakeKey_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MLOps Key Vault')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -62,6 +92,19 @@
 				"type": "AzureKeyVault",
 				"typeProperties": {
 					"baseUrl": "[parameters('MLOps Key Vault_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TripsDB')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('TripsDB_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -77,7 +120,7 @@
 				"typeProperties": {
 					"frequency": "Hour",
 					"interval": 1,
-					"startTime": "2020-05-19T18:39:00.000Z",
+					"startTime": "2020-05-19T18:39:00Z",
 					"delay": "00:00:00",
 					"maxConcurrency": 1,
 					"retryPolicy": {
@@ -158,6 +201,72 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pos_data_lake')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DataLakeKey",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "trans_00.txt",
+						"folderPath": "raw/pos/2020/05/18",
+						"fileSystem": "kvat"
+					},
+					"columnDelimiter": ",",
+					"compressionCodec": "gzip",
+					"compressionLevel": "Optimal",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/DataLakeKey')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "MLOps Key Vault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "sqlpassword"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MLOps Key Vault')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DataWarehouse')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -188,47 +297,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]",
-					"password": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "MLOps Key Vault",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "sqlpassword"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/MLOps Key Vault')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SourceDataset_olb')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "DataWarehouse",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
-				"schema": [],
-				"typeProperties": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/DataWarehouse')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -247,6 +315,24 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_olb')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DataWarehouse",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/DataWarehouse')]"
 			]
 		},
 		{
@@ -282,7 +368,8 @@
 								"sqlReaderQuery": {
 									"value": "select * from dbo.pos_tran\nwhere trandate >= '@{formatDateTime(pipeline().parameters.windowStart, 'yyyy-MM-dd HH:mm' )}' \nAND trandate < '@{formatDateTime(pipeline().parameters.windowEnd, 'yyyy-MM-dd HH:mm' )}'",
 									"type": "Expression"
-								}
+								},
+								"partitionOption": "None"
 							},
 							"sink": {
 								"type": "DelimitedTextSink",
@@ -367,7 +454,7 @@
 						}
 					],
 					"transformations": [],
-					"script": "source(output(\n\t\tposid as integer '000',\n\t\titemid as integer '000',\n\t\ttrandate as timestamp 'MM/dd/yyyy HH:mm:ss',\n\t\tprice as decimal(10,0) '$#########.###'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100,\n\trowUrlColumn: 'sourcefile',\n\tpartitionRootPath: 'raw/pos',\n\tinferDriftedColumnTypes: true,\n\twildcardPaths:['raw/pos/**/*.txt']) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+					"script": "source(output(\n\t\tposid as integer '000',\n\t\titemid as integer '000',\n\t\ttrandate as timestamp 'MM/dd/yyyy HH:mm:ss',\n\t\tprice as decimal(10,0) '$#########.###'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true,\n\tlimit: 100,\n\tignoreNoFilesFound: false,\n\trowUrlColumn: 'sourcefile',\n\tpartitionRootPath: 'raw/pos',\n\twildcardPaths:['raw/pos/**/*.txt']) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
 				}
 			},
 			"dependsOn": [
@@ -402,7 +489,7 @@
 				"typeProperties": {
 					"frequency": "Hour",
 					"interval": 1,
-					"startTime": "2020-05-19T18:12:00.000Z",
+					"startTime": "2020-05-19T18:12:00Z",
 					"delay": "00:00:00",
 					"maxConcurrency": 1,
 					"retryPolicy": {
