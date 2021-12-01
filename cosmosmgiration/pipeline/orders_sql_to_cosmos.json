@@ -1,0 +1,62 @@
+{
+	"name": "orders_sql_to_cosmos",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_qcy",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "."
+					},
+					{
+						"name": "Destination",
+						"value": "staging//orders.json"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT [value] FROM OPENJSON (\r\n    (SELECT o.[OrderId]\r\n        ,o.[OrderDate]\r\n        ,o.[FirstName]\r\n        ,o.[LastName]\r\n        ,o.[Address]\r\n        ,o.[City]\r\n        ,o.[State]\r\n        ,o.[PostalCode]\r\n        ,o.[Country]\r\n        ,o.[Phone]\r\n        ,o.[SMSOptIn]\r\n        ,o.[SMSStatus]\r\n        ,o.[Email]\r\n        ,o.[ReceiptUrl]\r\n        ,o.[Total]\r\n        ,o.[PaymentTransactionId]\r\n        ,o.[HasBeenShipped]\r\n        ,   (SELECT [OrderDetailId]\r\n                    ,[OrderId]\r\n                    ,[Email]\r\n                    ,[ProductId]\r\n                    ,[Quantity]\r\n                    ,[UnitPrice]\r\n                FROM [dbo].[OrderDetails] od \r\n                WHERE od.OrderId = o.OrderId for json auto) as OrderDetails\r\n\r\n    FROM [dbo].[Orders] o FOR JSON PATH\r\n    )\r\n)",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"validateDataConsistency": false
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_qcy",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_qcy",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}
