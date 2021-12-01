@@ -1,0 +1,9 @@
+{
+	"name": "contosodfhacker11212021",
+	"location": "westus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "4251f9fb-d5ae-40e6-a62e-06fc8f4545fa",
+		"tenantId": "6042515d-a7d2-4756-a080-dc85bfaf95a4"
+	}
+}

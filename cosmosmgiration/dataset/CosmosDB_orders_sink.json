@@ -1,0 +1,16 @@
+{
+	"name": "CosmosDB_orders_sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CosmosDb1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": {},
+		"typeProperties": {
+			"collectionName": "orders"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

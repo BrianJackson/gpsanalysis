@@ -1,0 +1,16 @@
+{
+	"name": "DestinationDataset_84f",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CosmosDb1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": {},
+		"typeProperties": {
+			"collectionName": "products"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

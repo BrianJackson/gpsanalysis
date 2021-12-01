@@ -1,0 +1,120 @@
+{
+	"name": "demo_copy_all",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach_ohx",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.cw_items",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy_ohx",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "dbo.@{item().source.table}"
+								},
+								{
+									"name": "Destination",
+									"value": "app"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "CosmosDbSqlApiSink",
+									"writeBehavior": "insert"
+								},
+								"enableStaging": false,
+								"validateDataConsistency": false
+							},
+							"inputs": [
+								{
+									"referenceName": "SourceDataset_ohx",
+									"type": "DatasetReference",
+									"parameters": {
+										"cw_table": "@item().source.table"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DestinationDataset_ohx",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"cw_items": {
+				"type": "Array",
+				"defaultValue": [
+					{
+						"source": {
+							"table": "Cartitem"
+						}
+					},
+					{
+						"source": {
+							"table": "Category"
+						}
+					},
+					{
+						"source": {
+							"table": "Event"
+						}
+					},
+					{
+						"source": {
+							"table": "Item"
+						}
+					},
+					{
+						"source": {
+							"table": "ItemAggregate"
+						}
+					},
+					{
+						"source": {
+							"table": "OrderDetails"
+						}
+					},
+					{
+						"source": {
+							"table": "Orders"
+						}
+					},
+					{
+						"source": {
+							"table": "User"
+						}
+					}
+				]
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-12-01T20:26:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
