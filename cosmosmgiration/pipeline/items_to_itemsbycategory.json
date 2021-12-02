@@ -1,0 +1,55 @@
+{
+	"name": "items_to_itemsbycategory",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_u3g",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "."
+					},
+					{
+						"name": "Destination",
+						"value": "itemsbycategory"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT [ItemId]\r\n      ,[VoteCount]\r\n      ,[ProductName]\r\n      ,[ImdbId]\r\n      ,i.[Description]\r\n      ,[ImagePath]\r\n      ,[ThumbnailPath]\r\n      ,[UnitPrice]\r\n      ,c.[CategoryId]\r\n      ,c.[CategoryName] as Category\r\n      ,[Popularity]\r\n      ,[OriginalLanguage]\r\n      ,[ReleaseDate]\r\n      ,[VoteAverage]\r\n  FROM [dbo].[Item] i\r\n  INNER JOIN dbo.Category c ON i.CategoryId = c.CategoryId",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "CosmosDbSqlApiSink",
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false,
+					"validateDataConsistency": false
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_u3g",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_u3g",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}
