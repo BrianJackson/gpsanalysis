@@ -14,7 +14,7 @@
 				"container": "staging"
 			},
 			"columnDelimiter": "\t",
-			"escapeChar": "",
+			"escapeChar": "\\",
 			"firstRowAsHeader": false,
 			"quoteChar": ""
 		},
