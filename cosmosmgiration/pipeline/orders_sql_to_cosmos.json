@@ -57,7 +57,7 @@
 				]
 			},
 			{
-				"name": "Copy orders to cosmos",
+				"name": "Copy orders blob to cosmos",
 				"type": "Copy",
 				"dependsOn": [
 					{
