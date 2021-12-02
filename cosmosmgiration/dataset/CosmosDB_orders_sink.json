@@ -9,7 +9,7 @@
 		"type": "CosmosDbSqlApiCollection",
 		"schema": {},
 		"typeProperties": {
-			"collectionName": "orders"
+			"collectionName": "orders1"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
