@@ -26,7 +26,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT [ItemId]\r\n      ,[VoteCount]\r\n      ,[ProductName]\r\n      ,[ImdbId]\r\n      ,i.[Description]\r\n      ,[ImagePath]\r\n      ,[ThumbnailPath]\r\n      ,[UnitPrice]\r\n      ,c.[CategoryId]\r\n      ,c.[CategoryName] as Category\r\n      ,[Popularity]\r\n      ,[OriginalLanguage]\r\n      ,[ReleaseDate]\r\n      ,[VoteAverage]\r\n  FROM [dbo].[Item] i\r\n  INNER JOIN dbo.Category c ON i.CategoryId = c.CategoryId",
+						"sqlReaderQuery": "SELECT [ItemId]\n      ,[VoteCount]\n      ,[ProductName]\n      ,[ImdbId]\n      ,i.[Description]\n      ,[ImagePath]\n      ,[ThumbnailPath]\n      ,[UnitPrice]\n      ,c.[CategoryId]\n      ,c.[CategoryName] as Category\n      ,[Popularity]\n      ,[OriginalLanguage]\n      ,[ReleaseDate]\n      ,[VoteAverage]\n      , 'Item' as Type\n  FROM [dbo].[Item] i\n  INNER JOIN dbo.Category c ON i.CategoryId = c.CategoryId",
 						"partitionOption": "None"
 					},
 					"sink": {
