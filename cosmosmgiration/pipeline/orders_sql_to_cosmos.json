@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy_qcy",
+				"name": "Copy_orders_to_blob",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -52,6 +52,57 @@
 				"outputs": [
 					{
 						"referenceName": "DestinationDataset_qcy",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Copy orders to cosmos",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Copy_orders_to_blob",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "CosmosDbSqlApiSink",
+						"writeBehavior": "upsert",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DestinationDataset_qcy",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "CosmosDB_orders_sink",
 						"type": "DatasetReference"
 					}
 				]
